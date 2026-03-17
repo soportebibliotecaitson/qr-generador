@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Generador QR | Bibliotecas ITSON</title>
+
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
+    <script defer src="index.js"></script>
+    <link rel="icon" href="itsonLogo.ico" type="image/x-icon" />
+  </head>
+
+  <body>
+    <header class="header">Generador QR</header>
+
+    <main class="layout">
+      <div class="wrapper">
+        <section class="panel">
+          <div class="panel-content">
+            <div class="section">
+              <h4>Contenido</h4>
+              <input
+                id="text"
+                placeholder="URL, texto o cualquier contenido..."
+              />
+            </div>
+
+            <div class="section">
+              <h4>Color QR</h4>
+              <div class="color-picker" id="colorPicker"></div>
+            </div>
+
+            <div class="section">
+              <h4>Fondo</h4>
+              <div class="color-picker" id="bgPicker"></div>
+              <div class="bg-buttons">
+                <button id="bgWhite">Blanco</button>
+                <button id="bgBlack">Negro</button>
+                <button id="bgTransparent">Transparente</button>
+              </div>
+            </div>
+
+            <div class="section">
+              <h4>Gradiente</h4>
+
+              <select id="gradientType">
+                <option value="none">Sin gradiente</option>
+                <option value="linear">Lineal</option>
+                <option value="radial">Radial</option>
+              </select>
+
+              <h5>Color inicial</h5>
+              <div class="color-picker" id="gradientStartPicker"></div>
+
+              <h5>Color final</h5>
+              <div class="color-picker" id="gradientEndPicker"></div>
+
+              <div class="gradient-presets">
+                <div
+                  class="grad-option"
+                  data-start="#3b82f6"
+                  data-end="#06b6d4"
+                ></div>
+                <div
+                  class="grad-option"
+                  data-start="#ef4444"
+                  data-end="#f97316"
+                ></div>
+                <div
+                  class="grad-option"
+                  data-start="#22c55e"
+                  data-end="#4ade80"
+                ></div>
+                <div
+                  class="grad-option"
+                  data-start="#a855f7"
+                  data-end="#ec4899"
+                ></div>
+                <div
+                  class="grad-option"
+                  data-start="#000000"
+                  data-end="#434343"
+                ></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h4>Forma</h4>
+              <select id="dotsType">
+                <option value="square">Cuadrado</option>
+                <option value="dots">Puntos</option>
+                <option value="rounded">Redondeado</option>
+                <option value="extra-rounded">Extra redondeado</option>
+                <option value="classy">Classy</option>
+                <option value="classy-rounded">Classy Rounded</option>
+              </select>
+            </div>
+
+            <div class="section">
+              <h4>Esquinas externas</h4>
+              <select id="cornersSquare">
+                <option value="square">Square</option>
+                <option value="dot">Dot</option>
+                <option value="extra-rounded">Extra Rounded</option>
+              </select>
+
+              <h4>Esquinas internas</h4>
+              <select id="cornersDot">
+                <option value="square">Square</option>
+                <option value="dot">Dot</option>
+              </select>
+
+              <h4>Color esquinas</h4>
+              <div class="color-picker" id="cornerColorPicker"></div>
+            </div>
+
+            <div class="section">
+              <h4>Tamaño</h4>
+              <input
+                type="range"
+                id="size"
+                min="128"
+                max="2048"
+                step="128"
+                value="1024"
+              />
+              <span id="sizeLabel">1024 x 1024 px</span>
+            </div>
+
+            <div class="section">
+              <h4>Logo</h4>
+              <input type="file" id="logo" />
+            </div>
+
+            <div class="section">
+              <h4>Exportación</h4>
+              <label class="checkbox">
+                <input type="checkbox" id="exportTransparent" />
+                Fondo transparente
+              </label>
+            </div>
+
+            <div id="warning" class="warning"></div>
+          </div>
+
+          <div class="panel-footer">
+            <button id="downloadBtn">Descargar QR</button>
+          </div>
+        </section>
+
+        <section class="preview">
+          <div class="preview-card">
+            <div id="qr"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
