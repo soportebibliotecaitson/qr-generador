@@ -2,27 +2,37 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Generador QR | Bibliotecas ITSON</title>
+    <title>Generador QR</title>
 
     <link rel="stylesheet" href="styles.css" />
     <script src="https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
     <script defer src="index.js"></script>
-    <link rel="icon" href="itsonLogo.ico" type="image/x-icon" />
   </head>
 
   <body>
-    <header class="header">Generador QR</header>
+
+    <!-- HEADER NUEVO -->
+    <header class="header">
+      <div class="header-container">
+
+        <img src="logo.png" alt="Logo" class="logo" />
+
+        <div class="header-text">
+          <h1>Generador QR</h1>
+          <p>Generador de códigos QR personalizados.</p>
+        </div>
+
+    </header>
 
     <main class="layout">
       <div class="wrapper">
+
         <section class="panel">
           <div class="panel-content">
+
             <div class="section">
               <h4>Contenido</h4>
-              <input
-                id="text"
-                placeholder="URL, texto o cualquier contenido..."
-              />
+              <input id="text" placeholder="URL o texto..." />
             </div>
 
             <div class="section">
@@ -33,6 +43,7 @@
             <div class="section">
               <h4>Fondo</h4>
               <div class="color-picker" id="bgPicker"></div>
+
               <div class="bg-buttons">
                 <button id="bgWhite">Blanco</button>
                 <button id="bgBlack">Negro</button>
@@ -49,39 +60,11 @@
                 <option value="radial">Radial</option>
               </select>
 
-              <h5>Color inicial</h5>
+              <h5>Inicio</h5>
               <div class="color-picker" id="gradientStartPicker"></div>
 
-              <h5>Color final</h5>
+              <h5>Fin</h5>
               <div class="color-picker" id="gradientEndPicker"></div>
-
-              <div class="gradient-presets">
-                <div
-                  class="grad-option"
-                  data-start="#3b82f6"
-                  data-end="#06b6d4"
-                ></div>
-                <div
-                  class="grad-option"
-                  data-start="#ef4444"
-                  data-end="#f97316"
-                ></div>
-                <div
-                  class="grad-option"
-                  data-start="#22c55e"
-                  data-end="#4ade80"
-                ></div>
-                <div
-                  class="grad-option"
-                  data-start="#a855f7"
-                  data-end="#ec4899"
-                ></div>
-                <div
-                  class="grad-option"
-                  data-start="#000000"
-                  data-end="#434343"
-                ></div>
-              </div>
             </div>
 
             <div class="section">
@@ -116,15 +99,8 @@
 
             <div class="section">
               <h4>Tamaño</h4>
-              <input
-                type="range"
-                id="size"
-                min="128"
-                max="2048"
-                step="128"
-                value="1024"
-              />
-              <span id="sizeLabel">1024 x 1024 px</span>
+              <input type="range" id="size" min="128" max="2048" step="128" value="1024" />
+              <span id="sizeLabel">1024 px</span>
             </div>
 
             <div class="section">
@@ -133,7 +109,6 @@
             </div>
 
             <div class="section">
-              <h4>Exportación</h4>
               <label class="checkbox">
                 <input type="checkbox" id="exportTransparent" />
                 Fondo transparente
@@ -141,10 +116,11 @@
             </div>
 
             <div id="warning" class="warning"></div>
+
           </div>
 
           <div class="panel-footer">
-            <button id="downloadBtn">Descargar QR</button>
+            <button id="downloadBtn">Descargar</button>
           </div>
         </section>
 
@@ -153,6 +129,7 @@
             <div id="qr"></div>
           </div>
         </section>
+
       </div>
     </main>
   </body>

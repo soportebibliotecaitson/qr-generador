@@ -4,51 +4,88 @@
 
 body {
   margin: 0;
+  padding: 0;
   font-family: system-ui, -apple-system, Arial;
   background: #f3f4f6;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   color: #1f2937;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 .header {
-  background: #0f5c82;
+  background: linear-gradient(to right, #0369a1, #082f49);
   color: white;
-  padding: 14px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: 0.3px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-/* LAYOUT */
+.header-container {
+  max-width: 1100px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+
+.logo {
+  width: 120px;
+}
+
+.header-text {
+  text-align: center;
+}
+
+.header-text h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.header-text p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* ================= LAYOUT ================= */
 .layout {
   flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  padding-bottom: 10px;
+  margin: 0;
 }
 
 .wrapper {
   width: 100%;
   max-width: 1100px;
-  height: 90vh;
+  margin: 0 auto;
+
   display: flex;
+  flex: 1;
+
+  height: calc(100vh - 90px);
   background: white;
   border-radius: 18px;
   overflow: hidden;
+
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
 
-/* PANEL */
+/* ================= PANEL ================= */
 .panel {
   width: 300px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid #e5e7eb;
   background: #ffffff;
+  height: 100%;
 }
 
 .panel-content {
@@ -78,9 +115,9 @@ body {
   background: #0c4a6e;
 }
 
-/* SECCIONES */
+/* ================= SECCIONES ================= */
 .section {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 h4 {
@@ -92,11 +129,10 @@ h4 {
 h5 {
   margin: 6px 0 4px;
   font-size: 12px;
-  font-weight: 500;
   color: #6b7280;
 }
 
-/* INPUTS */
+/* ================= INPUTS ================= */
 input,
 select {
   width: 100%;
@@ -117,7 +153,7 @@ select:focus {
   box-shadow: 0 0 0 2px rgba(15, 92, 130, 0.15);
 }
 
-/* COLOR PICKER */
+/* ================= COLOR ================= */
 .color-picker {
   display: flex;
   gap: 6px;
@@ -139,7 +175,6 @@ select:focus {
 
 .color-option.active {
   border: 2px solid #111;
-  transform: scale(1.1);
 }
 
 .color-option.custom {
@@ -148,34 +183,16 @@ select:focus {
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 14px;
+  color: #374151;
+  border: 2px dashed #9ca3af;
 }
 
-/* GRADIENTES */
-.gradient-presets {
-  display: flex;
-  gap: 6px;
-  margin-top: 6px;
+.color-option.custom:hover {
+  background: #d1d5db;
 }
 
-.grad-option {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: 0.2s;
-}
-
-.grad-option:hover {
-  transform: scale(1.08);
-}
-
-.grad-option.active {
-  border: 2px solid #111;
-}
-
-/* BOTONES FONDO */
+/* ================= BOTONES ================= */
 .bg-buttons {
   display: flex;
   gap: 6px;
@@ -202,13 +219,14 @@ select:focus {
   color: white;
 }
 
-/* PREVIEW */
+/* ================= PREVIEW ================= */
 .preview {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #f9fafb;
+  height: 100%;
 }
 
 .preview-card {
@@ -216,33 +234,15 @@ select:focus {
   padding: 28px;
   border-radius: 18px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  transition: 0.3s;
 }
 
-.preview-card:hover {
-  transform: translateY(-2px);
-}
-
-
-/* CHECKBOX */
-.checkbox {
-  display: grid;
-  grid-template-columns: auto auto;
-  flex-direction: column;
-  font-size: 12px;
-  padding: 10px;
-
-}
-
-/* WARNING */
+/* ================= WARNING ================= */
 .warning {
   color: #dc2626;
   font-size: 11px;
-  margin-top: 6px;
 }
 
-/* SCROLLBAR (BONUS) */
+/* ================= SCROLL ================= */
 .panel-content::-webkit-scrollbar {
   width: 6px;
 }
@@ -252,16 +252,11 @@ select:focus {
   border-radius: 10px;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-
-/* TABLET */
+/* ================= RESPONSIVE ================= */
 @media (max-width: 1024px) {
   .wrapper {
-    max-width: 95%;
-    height: auto;
     flex-direction: column;
+    height: auto;
   }
 
   .panel {
@@ -275,88 +270,30 @@ select:focus {
   }
 }
 
-/* MOBILE */
 @media (max-width: 768px) {
-  body {
-    height: auto;
-  }
-
   .layout {
-    align-items: flex-start;
     padding: 10px;
   }
 
-  .wrapper {
-    flex-direction: column;
-    border-radius: 12px;
+  .header-container {
+    grid-template-columns: 1fr;
+    text-align: center;
   }
 
-  .panel {
-    width: 100%;
+  .logo {
+    margin: auto;
+    width: 90px;
   }
 
-  .panel-content {
-    padding: 14px;
+  .header-text h1 {
+    font-size: 18px;
   }
 
-  .panel-footer {
-    padding: 10px;
-  }
-
-  .preview {
-    width: 100%;
-    padding: 16px;
-  }
-
-  .preview-card {
-    padding: 18px;
-  }
-
-  /* Inputs más grandes en móvil */
-  input,
-  select {
-    font-size: 14px;
-    padding: 10px;
-  }
-
-  /* Botones fondo apilados */
-  .bg-buttons {
-    flex-direction: column;
-  }
-
-  /* Gradientes más grandes para dedo */
-  .grad-option {
-    width: 32px;
-    height: 32px;
-  }
-
-  /* Colores más grandes */
-  .color-option {
-    width: 26px;
-    height: 26px;
-  }
-}
-
-/* MOBILE PEQUEÑO */
-@media (max-width: 480px) {
-  .header {
-    font-size: 14px;
-    padding: 10px;
-  }
-
-  h4 {
+  .header-text p {
     font-size: 12px;
   }
 
-  .preview-card {
-    padding: 14px;
-  }
-
-  .panel-content {
-    padding: 10px;
-  }
-
-  .wrapper {
-    border-radius: 10px;
+  .bg-buttons {
+    flex-direction: column;
   }
 }

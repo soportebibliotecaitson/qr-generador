@@ -1,9 +1,9 @@
 const PREVIEW_SIZE = 300;
-let exportSize = 1024;
 
 let selectedColor = "#000000";
 let selectedBg = "#ffffff";
 let transparentBg = false;
+let logoImage = null;
 
 let gradientType = "none";
 let colorStart = "#000000";
@@ -11,8 +11,15 @@ let colorEnd = "#3b82f6";
 let cornerColor = "#000000";
 
 const presetColors = [
-  "#000000","#ffffff","#ef4444","#f97316",
-  "#22c55e","#3b82f6","#6366f1","#a855f7","#ec4899",
+  "#000000",
+  "#ffffff",
+  "#ef4444",
+  "#f97316",
+  "#22c55e",
+  "#3b82f6",
+  "#6366f1",
+  "#a855f7",
+  "#ec4899",
 ];
 
 const qr = new QRCodeStyling({
@@ -21,136 +28,7 @@ const qr = new QRCodeStyling({
   data: "https://example.com",
 });
 
-/* ================= CONTRASTE ================= */
-function getLuminance(hex) {
-  const c = hex.replace("#", "");
-  const rgb = [0, 2, 4]
-    .map(i => parseInt(c.substr(i, 2), 16) / 255)
-    .map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
-  return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
-}
-
-function checkContrast() {
-  if (transparentBg) return;
-
-  const lum1 = getLuminance(selectedColor);
-  const lum2 = getLuminance(selectedBg);
-  const contrast =
-    (Math.max(lum1, lum2) + 0.05) /
-    (Math.min(lum1, lum2) + 0.05);
-
-  document.getElementById("warning").textContent =
-    contrast < 2 ? "⚠ Bajo contraste" : "";
-}
-
-/* ================= PALETAS ================= */
-function createPalette(id, isBg = false) {
-  const container = document.getElementById(id);
-
-  presetColors.forEach(color => {
-    const div = document.createElement("div");
-    div.className = "color-option";
-    div.style.background = color;
-
-    div.onclick = () => {
-      if (isBg) {
-        selectedBg = color;
-        transparentBg = false;
-
-        // quitar botones activos
-        document.querySelectorAll(".bg-buttons button")
-          .forEach(btn => btn.classList.remove("active"));
-      } else {
-        selectedColor = color;
-      }
-
-      container.querySelectorAll(".color-option")
-        .forEach(el => el.classList.remove("active"));
-
-      div.classList.add("active");
-      updateQR();
-    };
-
-    container.appendChild(div);
-  });
-}
-
-/* ================= GRADIENTES ================= */
-function createGradientPalette(id, isStart = true) {
-  const container = document.getElementById(id);
-
-  presetColors.forEach(color => {
-    const div = document.createElement("div");
-    div.className = "color-option";
-    div.style.background = color;
-
-    div.onclick = () => {
-      isStart ? colorStart = color : colorEnd = color;
-
-      container.querySelectorAll(".color-option")
-        .forEach(el => el.classList.remove("active"));
-
-      div.classList.add("active");
-      updateQR();
-    };
-
-    container.appendChild(div);
-  });
-}
-
-function initGradientPresets() {
-  document.querySelectorAll(".grad-option").forEach(el => {
-    const start = el.dataset.start;
-    const end = el.dataset.end;
-
-    el.style.background = `linear-gradient(45deg, ${start}, ${end})`;
-
-    el.onclick = () => {
-      gradientType = "linear";
-      colorStart = start;
-      colorEnd = end;
-
-      document.querySelectorAll(".grad-option")
-        .forEach(p => p.classList.remove("active"));
-
-      el.classList.add("active");
-      updateQR();
-    };
-  });
-}
-
-/* ================= ESQUINAS ================= */
-function createCornerPalette() {
-  const container = document.getElementById("cornerColorPicker");
-
-  presetColors.forEach(color => {
-    const div = document.createElement("div");
-    div.className = "color-option";
-    div.style.background = color;
-
-    div.onclick = () => {
-      cornerColor = color;
-
-      container.querySelectorAll(".color-option")
-        .forEach(el => el.classList.remove("active"));
-
-      div.classList.add("active");
-      updateQR();
-    };
-
-    container.appendChild(div);
-  });
-}
-
-/* ================= BOTONES BG ================= */
-function setActiveBgButton(activeId) {
-  document.querySelectorAll(".bg-buttons button")
-    .forEach(btn => btn.classList.remove("active"));
-
-  document.getElementById(activeId).classList.add("active");
-}
-
-/* ================= INIT ================= */
+/* INIT */
 window.addEventListener("DOMContentLoaded", () => {
   qr.append(document.getElementById("qr"));
 
@@ -160,113 +38,215 @@ window.addEventListener("DOMContentLoaded", () => {
 
   createGradientPalette("gradientStartPicker", true);
   createGradientPalette("gradientEndPicker", false);
-  initGradientPresets();
 
-  /* BOTONES FONDO */
+  bindEvents();
+  updateQR();
+});
+
+/* EVENTOS */
+function bindEvents() {
+  const sizeInput = document.getElementById("size");
+  const sizeLabel = document.getElementById("sizeLabel");
+
+  sizeInput.oninput = () => {
+    const val = parseInt(sizeInput.value);
+
+    exportSize = val;
+    sizeLabel.textContent = `${val} x ${val} px`;
+
+    // actualizar preview también
+    qr.update({
+      width: val > 0 ? 300 : val, // límite para preview
+      height: val > 0 ? 300 : val,
+    });
+  };
+
+  ["text", "dotsType", "cornersSquare", "cornersDot"].forEach(
+    (id) => (document.getElementById(id).oninput = updateQR),
+  );
+
+  document.getElementById("gradientType").oninput = (e) => {
+    gradientType = e.target.value;
+    updateQR();
+  };
+
   document.getElementById("bgWhite").onclick = () => {
-    selectedBg = "#ffffff";
+    selectedBg = "#fff";
     transparentBg = false;
-    setActiveBgButton("bgWhite");
     updateQR();
   };
 
   document.getElementById("bgBlack").onclick = () => {
-    selectedBg = "#000000";
+    selectedBg = "#000";
     transparentBg = false;
-    setActiveBgButton("bgBlack");
     updateQR();
   };
 
   document.getElementById("bgTransparent").onclick = () => {
     transparentBg = true;
-    setActiveBgButton("bgTransparent");
     updateQR();
-  };
-
-  document.getElementById("gradientType").oninput = (e) => {
-    gradientType = e.target.value;
-
-    if (gradientType === "none") {
-      document.querySelectorAll(".grad-option")
-        .forEach(el => el.classList.remove("active"));
-    }
-
-    updateQR();
-  };
-
-  ["text","dotsType","cornersSquare","cornersDot"]
-    .forEach(id => {
-      document.getElementById(id).oninput = updateQR;
-    });
-
-  document.getElementById("logo").onchange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      qr.update({
-        image: URL.createObjectURL(file),
-        imageOptions: {
-          margin: 8,
-          hideBackgroundDots: true,
-          imageSize: 0.4,
-        },
-      });
-    }
-  };
-
-  const sizeInput = document.getElementById("size");
-  const sizeLabel = document.getElementById("sizeLabel");
-
-  sizeInput.oninput = () => {
-    let val = Math.round(sizeInput.value / 128) * 128;
-    sizeInput.value = val;
-    exportSize = val;
-    sizeLabel.textContent = `${val} x ${val} px`;
   };
 
   document.getElementById("downloadBtn").onclick = downloadPNG;
+  document.getElementById("logo").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  updateQR();
-});
+    const reader = new FileReader();
 
-/* ================= UPDATE ================= */
+    reader.onload = function (event) {
+      logoImage = event.target.result; // base64
+      updateQR();
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+/* PALETAS + BOTÓN + */
+function createPalette(id, isBg = false) {
+  const container = document.getElementById(id);
+
+  presetColors.forEach((color) => {
+    const div = document.createElement("div");
+    div.className = "color-option";
+    div.style.background = color;
+
+    div.onclick = () => {
+      if (isBg) selectedBg = color;
+      else selectedColor = color;
+
+      updateQR();
+    };
+
+    container.appendChild(div);
+  });
+
+  addCustomColorButton(container, (color) => {
+    if (isBg) selectedBg = color;
+    else selectedColor = color;
+  });
+}
+
+function createGradientPalette(id, isStart) {
+  const container = document.getElementById(id);
+
+  presetColors.forEach((color) => {
+    const div = document.createElement("div");
+    div.className = "color-option";
+    div.style.background = color;
+
+    div.onclick = () => {
+      isStart ? (colorStart = color) : (colorEnd = color);
+      updateQR();
+    };
+
+    container.appendChild(div);
+  });
+
+  addCustomColorButton(container, (color) => {
+    isStart ? (colorStart = color) : (colorEnd = color);
+  });
+}
+
+function createCornerPalette() {
+  const container = document.getElementById("cornerColorPicker");
+
+  presetColors.forEach((color) => {
+    const div = document.createElement("div");
+    div.className = "color-option";
+    div.style.background = color;
+
+    div.onclick = () => {
+      cornerColor = color;
+      updateQR();
+    };
+
+    container.appendChild(div);
+  });
+
+  addCustomColorButton(container, (color) => {
+    cornerColor = color;
+  });
+}
+
+/* BOTÓN + */
+function addCustomColorButton(container, callback) {
+  const custom = document.createElement("div");
+  custom.className = "color-option custom";
+  custom.innerHTML = "+";
+
+  custom.onclick = () => {
+    const input = document.createElement("input");
+    input.type = "color";
+
+    input.style.position = "fixed";
+    input.style.left = "-9999px";
+
+    document.body.appendChild(input);
+
+    const applyColor = (color) => {
+      custom.style.background = color;
+      callback(color);
+      updateQR();
+    };
+
+    // ✔ cuando seleccionas color (evento real)
+    input.addEventListener("change", (e) => {
+      applyColor(e.target.value);
+      cleanup();
+    });
+
+    // ✔ fallback (por si el navegador no dispara change)
+    input.addEventListener("blur", () => {
+      cleanup();
+    });
+
+    function cleanup() {
+      if (document.body.contains(input)) {
+        document.body.removeChild(input);
+      }
+    }
+
+    input.click();
+  };
+
+  container.appendChild(custom);
+}
+/* UPDATE */
 function updateQR() {
-  checkContrast();
+  const dotsType = document.getElementById("dotsType").value;
 
-  let dotsOptions;
-
-  if (gradientType === "none") {
-    dotsOptions = {
-      color: selectedColor,
-      type: document.getElementById("dotsType").value,
-      gradient: null // 🔥 FIX
-    };
-  } else {
-    dotsOptions = {
-      type: document.getElementById("dotsType").value,
-      gradient: {
-        type: gradientType,
-        colorStops: [
-          { offset: 0, color: colorStart },
-          { offset: 1, color: colorEnd },
-        ],
-      },
-    };
-  }
+  const dotsOptions =
+    gradientType === "none"
+      ? { color: selectedColor, type: dotsType, gradient: null }
+      : {
+          type: dotsType,
+          gradient: {
+            type: gradientType,
+            colorStops: [
+              { offset: 0, color: colorStart },
+              { offset: 1, color: colorEnd },
+            ],
+          },
+        };
 
   qr.update({
     data: document.getElementById("text").value || "https://example.com",
+    image: logoImage,
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 5,
+    },
     dotsOptions,
-
     cornersSquareOptions: {
       type: document.getElementById("cornersSquare").value,
       color: cornerColor,
     },
-
     cornersDotOptions: {
       type: document.getElementById("cornersDot").value,
       color: cornerColor,
     },
-
     backgroundOptions: {
       color: transparentBg ? "transparent" : selectedBg,
     },
@@ -277,67 +257,13 @@ function updateQR() {
   qr.append(container);
 }
 
-/* ================= EXPORT ================= */
+/* EXPORT */
 async function downloadPNG() {
-  const exportTransparent =
-    document.getElementById("exportTransparent").checked;
-
-  const tempQR = new QRCodeStyling({
-    width: exportSize,
-    height: exportSize,
-    data: document.getElementById("text").value || "https://example.com",
-    margin: Math.floor(exportSize * 0.08),
-
-    dotsOptions:
-      gradientType === "none"
-        ? {
-            color: selectedColor,
-            type: document.getElementById("dotsType").value,
-          }
-        : {
-            type: document.getElementById("dotsType").value,
-            gradient: {
-              type: gradientType,
-              colorStops: [
-                { offset: 0, color: colorStart },
-                { offset: 1, color: colorEnd },
-              ],
-            },
-          },
-
-    cornersSquareOptions: {
-      type: document.getElementById("cornersSquare").value,
-      color: cornerColor,
-    },
-
-    cornersDotOptions: {
-      type: document.getElementById("cornersDot").value,
-      color: cornerColor,
-    },
-
-    backgroundOptions: {
-      color: exportTransparent ? "transparent" : "#ffffff",
-    },
-
-    image: qr._options.image || undefined,
-  });
-
-  const hiddenDiv = document.createElement("div");
-  hiddenDiv.style.position = "fixed";
-  hiddenDiv.style.left = "-9999px";
-  document.body.appendChild(hiddenDiv);
-
-  tempQR.append(hiddenDiv);
-
-  await new Promise(res => setTimeout(res, 200));
-
-  const canvas = hiddenDiv.querySelector("canvas");
+  const canvas = document.querySelector("#qr canvas");
   const url = canvas.toDataURL("image/png");
 
   const a = document.createElement("a");
   a.href = url;
   a.download = "qr.png";
   a.click();
-
-  document.body.removeChild(hiddenDiv);
 }
